@@ -1,2 +1,3 @@
 # prompt-tools-webui
-webui for prompt-markdown-parser repository
+
+Webui for [prompt-markdown-parser](https://github.com/alpertunga-bile/prompt-markdown-parser) repository
