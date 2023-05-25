@@ -3,13 +3,12 @@ def GetFiles(input):
 
     if input is None:
         return filesToParse
-
+    
     if isinstance(input, list) is False:
         filesToParse.append(input.name)
-        return
-    
-    for component in input:
-        filesToParse.append(component.name)
+    else:
+        for component in input:
+            filesToParse.append(component.name)
     
     return filesToParse
 
