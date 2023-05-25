@@ -1,10 +1,12 @@
 import gradio as gr
+from os import getcwd
 from WebUI.ParseUI import Parse
 
 with gr.Blocks() as application:
     with gr.Tab("Parse"):
         with gr.Row():
             fileSelect = gr.Files(
+                            value=getcwd(),
                             label="Prompt Files or Directory", 
                             type="file",
                             interactive=True
