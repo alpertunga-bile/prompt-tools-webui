@@ -1,12 +1,6 @@
 import gradio as gr
 from WebUI.ParseUI import Parse, ParseAll
-from json import loads
-from requests import get
-
-url = f"https://civitai.com/api/v1/images?limit=1"
-header = {"content-type":"application.json"}
-jsonFile = loads(get(url, headers=header).text)
-maxPage = int(jsonFile['metadata']['totalPages'])
+from WebUI.CivitaiUI import GetMaxPage, Enhance
 
 with gr.Blocks() as application:
     with gr.Tab("Parse"):
@@ -28,8 +22,17 @@ with gr.Blocks() as application:
             negativeFilenameTextbox = gr.Textbox(label="Negative Filename", value="negative", interactive=True, lines=1)
             
         imageLimitSlider = gr.Slider(1, 200, value=1, label="Image Limit Per Page", interactive=True)
-        pageNumberToStart = gr.Slider(1, maxPage - 1, value=1, label="Page Number To Start", interactive=True)
-        pageNumberToEnd = gr.Slider(2, maxPage, value=2, label="Page Number To End", interactive=True)
+        pageNumberToStart = gr.Slider(1, GetMaxPage() - 1, value=1, label="Page Number To Start", interactive=True)
+        pageNumberToEnd = gr.Slider(2, GetMaxPage(), value=2, label="Page Number To End", interactive=True)
+        with gr.Row():
+            wantedPromptsTextBox = gr.Textbox(label="Wanted Prompts",
+                                              value="beautiful, female, breasts, woman, girl, masterpiece",
+                                              interactive=True,
+                                              lines=2)
+            unwantedPromptsTextbox = gr.Textbox(label="Unwanted Prompts",
+                                                value="obese, fat, ugly, weird, creepy, loli, old woman, old, child, creature, kid",
+                                                interactive=True,
+                                                lines=2)
         with gr.Row():
             sortDropdown = gr.Dropdown(choices=["Most Reactions", "Most Comments", "Newest"],
                                     value="Most Reactions",
@@ -46,8 +49,13 @@ with gr.Blocks() as application:
         enhanceButton = gr.Button(value="Enhance")
 
     # Parse Tab Listeners
-    parseButton.click(Parse, inputs=[fileSelect, translateCheckbox], show_progress=True)
-    parseAllButton.click(ParseAll, inputs=[translateCheckbox], show_progress=True)
+    parseButton.click(Parse, inputs=[fileSelect, translateCheckbox])
+    parseAllButton.click(ParseAll, inputs=[translateCheckbox])
+
+    # Civitai Tab Listeners
+    enhanceButton.click(Enhance,
+                        inputs=[positiveFilenameTextbox, negativeFilenameTextbox, imageLimitSlider, pageNumberToStart, pageNumberToEnd,
+                                sortDropdown, periodDropdown, nsfwDropdown, wantedPromptsTextBox, unwantedPromptsTextbox])
 
 if __name__ == '__main__':
     application.launch()
