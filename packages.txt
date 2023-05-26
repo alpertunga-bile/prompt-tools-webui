@@ -1,1 +1,2 @@
 gradio
+deep_translator
