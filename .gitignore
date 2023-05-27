@@ -163,3 +163,6 @@ cython_debug/
 dataset/
 prompts/
 logs.txt
+Real-ESRGAN/
+upscaleInput/
+upscaleOutput/
