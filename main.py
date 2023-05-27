@@ -132,4 +132,4 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
                                outputs=[upscaleOutputGallery])
 
 if __name__ == '__main__':
-    application.queue(concurrency_count=4).launch()
+    application.queue(concurrency_count=4).launch(server_port=8080)
