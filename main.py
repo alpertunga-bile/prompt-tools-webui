@@ -3,6 +3,7 @@ from gradio.themes import Monochrome
 from WebUI.ParseUI import Parse, ParseAll
 from WebUI.CivitaiUI import GetMaxPage, Enhance, Show
 from WebUI.TrainUI import Train
+from WebUI.GenerateUI import Generate
 
 with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
     with Tab("Parse"):
@@ -23,10 +24,10 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
             positiveFilenameTextbox = Textbox(label="Positive Filename", value="positive", interactive=True, lines=1)
             negativeFilenameTextbox = Textbox(label="Negative Filename", value="negative", interactive=True, lines=1)
             
-        imageLimitSlider = Slider(1, 200, value=1, label="Image Limit Per Page", interactive=True)
+        imageLimitSlider = Slider(1, 200, value=1, step=1, label="Image Limit Per Page", interactive=True)
         with Row():
-            pageNumberToStart = Slider(1, GetMaxPage() - 1, value=1, label="Page Number To Start", interactive=True)
-            pageNumberToEnd = Slider(2, GetMaxPage(), value=2, label="Page Number To End", interactive=True)
+            pageNumberToStart = Slider(1, GetMaxPage() - 1, value=1, step=1, label="Page Number To Start", interactive=True)
+            pageNumberToEnd = Slider(2, GetMaxPage(), value=2, step=1, label="Page Number To End", interactive=True)
         with Row():
             wantedPromptsTextBox = Textbox(label="Wanted Prompts",
                                               value="beautiful, female, breasts, woman, girl, masterpiece",
@@ -58,8 +59,8 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
             modelNameTextbox = Textbox(value="gpt2", label="Model name for text generator model", interactive=True, lines=1)
             modelFolderNameTextbox = Textbox(value="myTextGenerator", label="Model folder name", interactive=True, lines=1)
         with Row():
-            epochSlider = Slider(label="Epochs", minimum=1, maximum=1000, value=10, interactive=True)
-            batchSlider = Slider(label="Batch Size", minimum=1, maximum=512, value=32, interactive=True)
+            epochSlider = Slider(label="Epochs", minimum=1, maximum=1000, value=10, step=1, interactive=True)
+            batchSlider = Slider(label="Batch Size", minimum=1, maximum=512, value=32, step=1, interactive=True)
         datasetFileSelect = File(label="Choose Dataset", file_types=["text"], interactive=True)
         with Row():
             trainInfoLabel = Label(label="Train Info")
@@ -71,8 +72,8 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
             generateModelNameTextbox = Textbox(label="Model Name", value="gpt2", lines=1, interactive=True)
             generateShowButton = Button(value="Show Dataset Folder")
         with Row():
-            generateMinLengthSlider = Slider(10, 100, label="Min Length", info="Minimum number of generated tokens", value=10, interactive=True)
-            generateMaxLengthSlider = Slider(50, 300, label="Max Length", info="Maximum number of generated tokens", value=100,interactive=True)
+            generateMinLengthSlider = Slider(10, 100, step=1, label="Min Length", info="Minimum number of generated tokens", value=10, interactive=True)
+            generateMaxLengthSlider = Slider(50, 300, step=1, label="Max Length", info="Maximum number of generated tokens", value=100,interactive=True)
         with Row():
             generateDoSampleCheckbox = Checkbox(value=False, label="Do Sample", info='When checked, picks words based on their conditional probability', interactive=True)
             generateEarlyStopCheckbox = Checkbox(value=False, label="Early Stop", info='When checked, generation finishes if the EOS token is reached', interactive=True)
@@ -101,6 +102,10 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
     
     # Generate Tab Listeners
     generateShowButton.click(Show)
+    generateGenerateButton.click(Generate, 
+                                inputs=[generateModelNameTextbox, generateModelFolderNameTextbox, generateSeedTextbox, generateMinLengthSlider, generateMaxLengthSlider,
+                                        generateDoSampleCheckbox, generateEarlyStopCheckbox, generateRecursiveLevel, generateSelfRecursiveCheckbox],
+                                outputs=[generateGenTextbox])
 
 if __name__ == '__main__':
     application.queue(concurrency_count=4).launch()

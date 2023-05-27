@@ -1,3 +1,4 @@
 gradio
 deep_translator
 happytransformer
+xformers
