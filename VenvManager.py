@@ -139,7 +139,12 @@ class VenvManager:
         elif self.osName == "Windows":
             venvCommand = "venv\\Scripts\\pip.exe uninstall torch --yes && venv\\Scripts\\pip.exe "
         
-        venvCommand += "install torch --index-url https://download.pytorch.org/whl/cu118"
+        venvCommand += "install torch --index-url https://download.pytorch.org/whl/cu118 && "
+
+        if self.osName == "Linux":
+            venvCommand += "pip3 install --upgrade accelerate"
+        elif self.osName == "Windows":
+            venvCommand += "venv\\Scripts\\pip.exe install --upgrade accelerate"
 
         return venvCommand 
     
