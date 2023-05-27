@@ -139,7 +139,7 @@ class VenvManager:
         elif self.osName == "Windows":
             venvCommand = "venv\\Scripts\\pip.exe uninstall torch --yes && venv\\Scripts\\pip.exe "
         
-        venvCommand += "install torch --index-url https://download.pytorch.org/whl/cu118 && "
+        venvCommand += "install torch --index-url https://download.pytorch.org/whl/cu117 && "
 
         if self.osName == "Linux":
             venvCommand += "pip3 install --upgrade accelerate"
@@ -155,10 +155,6 @@ class VenvManager:
     def RunFile(self, filepath):
         if exists(self.venvName) is False:
             print(f"{self.venvName} is not exists")
-            return
-        
-        if exists(filepath) is False:
-            print(f"{filepath} is not exists")
             return
 
         self.RunCommand(self.GetRunFileCommand(filepath))

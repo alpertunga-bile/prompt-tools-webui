@@ -2,12 +2,45 @@ from VenvManager import VenvManager
 from os.path import exists
 from os import mkdir
 from argparse import ArgumentParser
+from subprocess import call
+from shutil import rmtree
+
+def CheckAndCreateDirectory(foldername : str):
+    if exists(foldername) is False:
+        mkdir(foldername)
+
+def CreateDirectories():
+    CheckAndCreateDirectory("dataset")
+    CheckAndCreateDirectory("prompts")
+    CheckAndCreateDirectory("upscaleInput")
+    CheckAndCreateDirectory("upscaleOutput")
+
+def CreateEnvironmentForRealESRGAN():
+    if exists("Real-ESRGAN"):
+        return
+
+    print("Cloning repository ...")
+    process = call("git clone https://github.com/xinntao/Real-ESRGAN.git", shell=True)
+    print("Installing required packages ...")
+    command = ""
+    command += "venv\Scripts\\activate.bat && "
+    command += "venv\Scripts\pip.exe install basicsr facexlib gfpgan && "
+    command += "venv\Scripts\pip.exe install -r Real-ESRGAN\\requirements.txt && "
+    command += "cd Real-ESRGAN && call ..\\venv\Scripts\python.exe setup.py develop && "
+    command += "..\\venv\Scripts\pip.exe uninstall torch torchvision --yes && "
+    command += "..\\venv\Scripts\pip.exe install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117 && "
+    command += "cd .. && venv\Scripts\\deactivate.bat"
+    process = call(command, shell=True)
+    print("Installation is completed!!! You can continue")
 
 def CreateEnvrionment(venvManager : VenvManager, isRecreate : bool):
     if venvManager.IsEnvironmentCreated() is True and isRecreate is False:
         print(f"{venvManager.venvName} virtual environment is already exists")
         return
     
+    if exists("Real-ESRGAN"):
+        rmtree("Real-ESRGAN")
+        
     venvManager.CreateEnvironmentWPackageNames("packages.txt", isRecreate)
     venvManager.ReInstallTorch()
 
@@ -27,10 +60,7 @@ if __name__ == '__main__':
     if args.reinstall:
         ReInstall(venvManager)
 
-    if exists("dataset") is False:
-        mkdir("dataset")
-
-    if exists("prompts") is False:
-        mkdir("prompts")
+    CreateEnvironmentForRealESRGAN()
+    CreateDirectories()
 
     venvManager.RunFile("main.py")

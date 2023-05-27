@@ -1,9 +1,11 @@
-from gradio import Blocks, Column, Tab, Row, Label, Files, File, Checkbox, Button, Textbox, Slider, Dropdown
+from os import getcwd
+from gradio import Blocks, Button, Checkbox, Column, Dropdown, File, Files, Gallery, Label, Row, Tab, Textbox, Slider
 from gradio.themes import Monochrome
 from WebUI.ParseUI import Parse, ParseAll
 from WebUI.CivitaiUI import GetMaxPage, Enhance, Show
 from WebUI.TrainUI import Train
 from WebUI.GenerateUI import Generate
+from WebUI.UpscaleUI import Upscale
 
 with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
     with Tab("Parse"):
@@ -83,6 +85,23 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
         generateSeedTextbox = Textbox(label="Seed", value="masterpiece", interactive=True)
         generateGenTextbox = Textbox(label="Generated Text", interactive=False, lines=10)
         generateGenerateButton = Button("Generate")
+    with Tab("Upscale"):
+        with Row():
+            upscaleInputTextbox = Textbox(value=f"{getcwd()}/upscaleInput", label="Input Directory", interactive=False)
+            upscaleOutputTextbox = Textbox(value=f"{getcwd()}/upscaleOutput", label="Output Directory", interactive=False)
+        with Row():
+            upscaleModelDropbox = Dropdown(choices=['RealESRGAN_x4plus',
+                                            'RealESRNet_x4plus',
+                                            'RealESRGAN_x4plus_anime_6B',
+                                            'RealESRGAN_x2plus',
+                                            'realesr-general-x4v3'],
+                                            value='RealESRGAN_x4plus',
+                                            interactive=True)
+            upscaleScaleSlider = Slider(2, 4, value=2, step=1, label="Scale", interactive=True)
+            upscaleFaceEnhanceCheckbox = Checkbox(value=False, label="Face Enhancement with GPFGAN", interactive=True)
+            upscaleFP32Checkbox = Checkbox(value=False, label="FP32", interactive=True)
+        upscaleOutputGallery = Gallery(label="Outputs")
+        upscaleUpscaleButton = Button("Upscale")
 
     # Parse Tab Listeners
     parseButton.click(Parse, inputs=[fileSelect, translateCheckbox], outputs=[parserProgress])
@@ -106,6 +125,11 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
                                 inputs=[generateModelNameTextbox, generateModelFolderNameTextbox, generateSeedTextbox, generateMinLengthSlider, generateMaxLengthSlider,
                                         generateDoSampleCheckbox, generateEarlyStopCheckbox, generateRecursiveLevel, generateSelfRecursiveCheckbox],
                                 outputs=[generateGenTextbox])
+    
+    # Upscale Tab Listeners
+    upscaleUpscaleButton.click(Upscale, 
+                               inputs=[upscaleModelDropbox, upscaleScaleSlider, upscaleFaceEnhanceCheckbox, upscaleFP32Checkbox],
+                               outputs=[upscaleOutputGallery])
 
 if __name__ == '__main__':
     application.queue(concurrency_count=4).launch()
