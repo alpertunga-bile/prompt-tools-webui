@@ -131,6 +131,18 @@ class VenvManager:
 
         return venvCommand
     
+    def GetReInstallTorchCommand(self):
+        venvCommand = ""
+        venvCommand = ""
+        if self.osName == "Linux":
+            venvCommand = "pip3 uninstall torch --yes && pip3 "
+        elif self.osName == "Windows":
+            venvCommand = "venv\\Scripts\\pip.exe uninstall torch --yes && venv\\Scripts\\pip.exe "
+        
+        venvCommand += "install torch --index-url https://download.pytorch.org/whl/cu118"
+
+        return venvCommand 
+    
     """
     Run Functions
     """
@@ -216,6 +228,14 @@ class VenvManager:
 
         self.RunCommand(self.GetInstallWPackagesCommand(path))
         self.RunCommand(self.GetCreateRequirementsFileCommand())
+
+    def ReInstallTorch(self):
+        if exists(self.venvName) is False:
+            print(f"{self.venvName} is not exists")
+            return
+        
+        command = self.GetReInstallTorchCommand()
+        self.RunCommandInEnvironment(command)
 
     """
     Update Functions
