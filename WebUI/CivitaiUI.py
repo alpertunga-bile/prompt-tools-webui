@@ -3,8 +3,11 @@ from requests import get
 from re import sub
 from os.path import exists
 import gc
-from tqdm import tqdm
 from gradio import Progress
+from os import startfile
+
+def Show():
+    startfile("dataset")
 
 def GetMaxPage():
     url = f"https://civitai.com/api/v1/images?limit=1"

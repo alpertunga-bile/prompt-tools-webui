@@ -10,4 +10,6 @@ def Train(modelName, epochs, batchSize, modelFolderName, dataset):
     args = GENTrainArgs(num_train_epochs=epochs, batch_size=batchSize)
     generator.train(dataset.name, args=args)
     generator.save(f"dataset/{modelFolderName}")
-    print("DONE !!!")
+    result = generator.eval(dataset.name)
+    print("Train> DONE !!!")
+    return ["Done !!!", f"Evaluation Score : {result.loss}"]

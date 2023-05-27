@@ -1,7 +1,7 @@
 from gradio import Blocks, Column, Tab, Row, Label,  Files, File, Checkbox, Button, Textbox, Slider, Dropdown
 from gradio.themes import Monochrome
 from WebUI.ParseUI import Parse, ParseAll
-from WebUI.CivitaiUI import GetMaxPage, Enhance
+from WebUI.CivitaiUI import GetMaxPage, Enhance, Show
 from WebUI.TrainUI import Train
 
 with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
@@ -48,7 +48,9 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
                                     value="All",
                                     label="NSFW",
                                     interactive=True)
-        enhanceButton = Button(value="Enhance")
+        with Row():
+            enhanceButton = Button(value="Enhance")
+            civitaiShowButton = Button(value="Show Dataset Folder")
         civitaiProgress = Label(label="Info")
     with Tab("Train"):
         modelNameTextbox = Textbox(value="gpt2", label="Model name for text generator model", interactive=True, lines=1)
@@ -57,6 +59,9 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
         modelFolderNameTextbox = Textbox(value="myTextGenerator", label="Model folder name", interactive=True, lines=1)
         datasetFileSelect = File(label="Choose Dataset", file_types=["text"], interactive=True)
         trainButton = Button(value="Train", interactive=True)
+        with Row():
+            trainInfoLabel = Label(label="Train Info")
+            evaluateInfoLabel = Label(label="Evaluate Info")
 
     # Parse Tab Listeners
     parseButton.click(Parse, inputs=[fileSelect, translateCheckbox], outputs=[parserProgress])
@@ -67,10 +72,12 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
                         inputs=[positiveFilenameTextbox, negativeFilenameTextbox, imageLimitSlider, pageNumberToStart, pageNumberToEnd,
                                 sortDropdown, periodDropdown, nsfwDropdown, wantedPromptsTextBox, unwantedPromptsTextbox], 
                         outputs=[civitaiProgress])
+    civitaiShowButton.click(Show)
     
     # Train Tab Listeners
     trainButton.click(Train, 
-                      [modelNameTextbox, epochSlider, batchSlider, modelFolderNameTextbox, datasetFileSelect])
+                      [modelNameTextbox, epochSlider, batchSlider, modelFolderNameTextbox, datasetFileSelect],
+                      outputs=[trainInfoLabel, evaluateInfoLabel])
 
 if __name__ == '__main__':
     application.queue(concurrency_count=4).launch()
