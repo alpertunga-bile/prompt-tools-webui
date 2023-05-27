@@ -4,6 +4,7 @@ from re import sub
 from os.path import exists
 import gc
 from tqdm import tqdm
+from gradio import Progress
 
 def GetMaxPage():
     url = f"https://civitai.com/api/v1/images?limit=1"
@@ -25,7 +26,7 @@ def GetUrl(imageLimit, sort, period, nsfw):
 
     return url
 
-def Enhance(positiveFilename, negativeFilename, imageLimit, pageStart, pageEnd, sort, period, nsfw, wantedPrompts, unwantedPrompts):
+def Enhance(positiveFilename, negativeFilename, imageLimit, pageStart, pageEnd, sort, period, nsfw, wantedPrompts, unwantedPrompts, progress=Progress()):
     url = GetUrl(imageLimit, sort, period, nsfw)
 
     wantedPromptsList = wantedPrompts.split(",")
@@ -55,7 +56,7 @@ def Enhance(positiveFilename, negativeFilename, imageLimit, pageStart, pageEnd, 
 
     header = {"content-type":"application.json"}
 
-    for pageNumber in tqdm(range(pageStart, pageEnd), desc="Getting Data From Pages"):
+    for pageNumber in progress.tqdm(range(pageStart, pageEnd + 1), desc="Getting Data From Pages"):
         url = url + str(pageNumber)
         try:
             jsonFile = loads(get(url, headers=header).text)
@@ -101,7 +102,8 @@ def Enhance(positiveFilename, negativeFilename, imageLimit, pageStart, pageEnd, 
 
     gc.collect()
 
-    print("DONE !!!")
+    print("Civitai> DONE !!!")
+    return "Done !!!"
 
 def GetPrompts(jsonFile, imageIndex):
     positivePrompt = None

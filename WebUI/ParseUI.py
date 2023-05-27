@@ -36,13 +36,24 @@ def Parse(files, isTranslate, progress=Progress(), isParsingAll = False):
             continue
         ParseAndSave(promptFile, isTranslate)
 
-    print("DONE !!!")
+    print("Parse> DONE !!!")
     return "DONE !!!"
 
-def ParseAll(isTranslate):
+def ParseAll(isTranslate, progress=Progress()):
     fastPath = join(getcwd(), "prompts")
     promptFiles = glob(f"{fastPath}\*.md")
-    Parse(promptFiles, isTranslate, True)
+    
+    if len(promptFiles) == 0:
+        print("There are no files to parse")
+        return "::ERROR:: There are no files to parse"
+    
+    for promptFile in progress.tqdm(promptFiles, desc="Parsing"):
+        if exists(promptFile) is False:
+            continue
+        ParseAndSave(promptFile, isTranslate)
+
+    print("ParseAll > DONE !!!")
+    return "DONE !!!"
 
 def ParseAndSave(promptFile, isTranslate):
         file = open(promptFile, "r")
