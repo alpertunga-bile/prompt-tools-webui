@@ -2,7 +2,7 @@ import gradio as gr
 from WebUI.ParseUI import Parse, ParseAll
 from WebUI.CivitaiUI import GetMaxPage, Enhance
 
-with gr.Blocks() as application:
+with gr.Blocks(title="Prompt Tools WebUI", theme=gr.themes.Monochrome()) as application:
     with gr.Tab("Parse"):
         with gr.Row():
             fileSelect = gr.Files(
@@ -15,7 +15,6 @@ with gr.Blocks() as application:
                 translateCheckbox = gr.Checkbox(value=False, label="Translate", info="Translate the prompts to English")
                 parseAllButton = gr.Button(value="Parse All Files In Prompts Folder")
                 parseButton = gr.Button(value="Parse")
-
     with gr.Tab("Civitai"):
         with gr.Row():
             positiveFilenameTextbox = gr.Textbox(label="Positive Filename", value="positive", interactive=True, lines=1)
@@ -47,6 +46,13 @@ with gr.Blocks() as application:
                                     label="NSFW",
                                     interactive=True)
         enhanceButton = gr.Button(value="Enhance")
+    with gr.Tab("Train"):
+        modelNameTextArea = gr.TextArea(value="gpt2", label="Model name for text generator model", interactive=True, lines=1)
+        epochSlider = gr.Slider(label="Epochs", minimum=1, maximum=1000, value=10, interactive=True)
+        batchSlider = gr.Slider(label="Batch Size", minimum=1, maximum=512, value=32, interactive=True)
+        modelFolderNameTextArea = gr.TextArea(value="myTextGenerator", label="Model folder name", interactive=True, lines=1)
+        datasetFileSelect = gr.File(label="Choose Dataset", file_types=["text"], interactive=True)
+        trainButton = gr.Button(value="Train", interactive=True)
 
     # Parse Tab Listeners
     parseButton.click(Parse, inputs=[fileSelect, translateCheckbox])
