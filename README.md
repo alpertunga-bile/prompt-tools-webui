@@ -6,5 +6,5 @@
 - [x] Two repositories functionalities are added.
 
 ## TODO
-- [] Adding guides to README file
-- [] Adding video guides for tabs
+- [ ] Adding guides to README file
+- [ ] Adding video guides for tabs
