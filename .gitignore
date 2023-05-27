@@ -162,3 +162,4 @@ cython_debug/
 # Local folders
 dataset/
 prompts/
+logs.txt
