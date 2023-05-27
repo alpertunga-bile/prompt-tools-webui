@@ -3,7 +3,7 @@ from os.path import exists, join
 from pathlib import Path
 from os import getcwd
 from glob import glob
-from tqdm import tqdm
+from gradio import Progress
 
 def GetFiles(input):
     filesToParse = []
@@ -19,7 +19,7 @@ def GetFiles(input):
     
     return filesToParse
 
-def Parse(files, isTranslate, isParsingAll = False):
+def Parse(files, isTranslate, progress=Progress(), isParsingAll = False):
     filenames = []
 
     if isParsingAll:
@@ -29,14 +29,15 @@ def Parse(files, isTranslate, isParsingAll = False):
 
     if len(filenames) == 0:
         print("There are no files to parse")
-        return
+        return "::ERROR:: There are no files to parse"
 
-    for promptFile in tqdm(filenames, desc="Parsing"):
+    for promptFile in progress.tqdm(filenames, desc="Parsing"):
         if exists(promptFile) is False:
             continue
         ParseAndSave(promptFile, isTranslate)
 
-    print("Parsing DONE !!!")
+    print("DONE !!!")
+    return "DONE !!!"
 
 def ParseAll(isTranslate):
     fastPath = join(getcwd(), "prompts")
