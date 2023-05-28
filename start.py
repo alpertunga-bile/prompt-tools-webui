@@ -15,7 +15,7 @@ def CreateDirectories():
     CheckAndCreateDirectory("upscaleInput")
     CheckAndCreateDirectory("upscaleOutput")
 
-def CreateEnvironmentForRealESRGAN():
+def CreateEnvironmentForRealESRGAN(osName : str):
     if exists("Real-ESRGAN"):
         return
 
@@ -23,13 +23,22 @@ def CreateEnvironmentForRealESRGAN():
     process = call("git clone https://github.com/xinntao/Real-ESRGAN.git", shell=True)
     print("Installing required packages ...")
     command = ""
-    command += "venv\Scripts\\activate.bat && "
-    command += "venv\Scripts\pip.exe install basicsr facexlib gfpgan && "
-    command += "venv\Scripts\pip.exe install -r Real-ESRGAN\\requirements.txt && "
-    command += "cd Real-ESRGAN && call ..\\venv\Scripts\python.exe setup.py develop && "
-    command += "..\\venv\Scripts\pip.exe uninstall torch torchvision --yes && "
-    command += "..\\venv\Scripts\pip.exe install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117 && "
-    command += "cd .. && venv\Scripts\\deactivate.bat"
+    if osName == 'Windows':
+        command += "venv\Scripts\\activate.bat && "
+        command += "venv\Scripts\pip.exe install basicsr facexlib gfpgan && "
+        command += "venv\Scripts\pip.exe install -r Real-ESRGAN\\requirements.txt && "
+        command += "cd Real-ESRGAN && call ..\\venv\Scripts\python.exe setup.py develop && "
+        command += "..\\venv\Scripts\pip.exe uninstall torch torchvision --yes && "
+        command += "..\\venv\Scripts\pip.exe install torch torchvision --index-url https://download.pytorch.org/whl/cu117 && "
+        command += "cd .. && venv\Scripts\\deactivate.bat"
+    elif osName == 'Linux':
+        command += "source venv/Scripts/activate && "
+        command += "pip3 install basicsr facexlib gfpgan && "
+        command += "pip3 install -r Real-ESRGAN/requirements.txt && "
+        command += "cd Real-ESRGAN && python setup.py develop && "
+        command += "pip3 uninstall torch torchvision --yes && "
+        command += "pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu117 && "
+        command += "cd .. && deactivate"
     process = call(command, shell=True)
     print("Installation is completed!!! You can continue")
 
