@@ -1,4 +1,5 @@
 from os import getcwd
+from os.path import join
 from gradio import Blocks, Button, Checkbox, Column, Dropdown, File, Files, Gallery, Label, Row, Tab, Textbox, Slider
 from gradio.themes import Monochrome
 from WebUI.ParseUI import Parse, ParseAll
@@ -87,8 +88,8 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
         generateGenerateButton = Button("Generate")
     with Tab("Upscale"):
         with Row():
-            upscaleInputTextbox = Textbox(value=f"{getcwd()}/upscaleInput", label="Input Directory", interactive=False)
-            upscaleOutputTextbox = Textbox(value=f"{getcwd()}/upscaleOutput", label="Output Directory", interactive=False)
+            upscaleInputTextbox = Textbox(value=join(getcwd(), "upscaleInput"), label="Input Directory", interactive=False)
+            upscaleOutputTextbox = Textbox(value=join(getcwd(), "upscaleOutput"), label="Output Directory", interactive=False)
         with Row():
             upscaleModelDropbox = Dropdown(choices=['RealESRGAN_x4plus',
                                             'RealESRNet_x4plus',
@@ -96,6 +97,7 @@ with Blocks(title="Prompt Tools WebUI", theme=Monochrome()) as application:
                                             'RealESRGAN_x2plus',
                                             'realesr-general-x4v3'],
                                             value='RealESRGAN_x4plus',
+                                            label="Models",
                                             interactive=True)
             upscaleScaleSlider = Slider(2, 4, value=2, step=1, label="Scale", interactive=True)
             upscaleFaceEnhanceCheckbox = Checkbox(value=False, label="Face Enhancement with GPFGAN", interactive=True)
