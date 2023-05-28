@@ -1,6 +1,6 @@
 def RemoveDuplicates(line):
     uniqueList = []
-    [uniqueList.append(x) for x in line if x not in uniqueList]
+    [uniqueList.append(x) for x in line if x.replace(" ", "") not in uniqueList]
     return uniqueList
 
 def Preprocess(line):
@@ -11,7 +11,7 @@ def Preprocess(line):
     tempLine = tempLine.replace(",,", ",")
     tempLine = tempLine.replace(",, ", ", ")
 
-    tempLine = ', '.join(RemoveDuplicates(tempLine.split(", ")))
+    tempLine = ', '.join(RemoveDuplicates(tempLine.split(",")))
 
     return tempLine
 
