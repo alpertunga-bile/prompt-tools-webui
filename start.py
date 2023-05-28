@@ -69,7 +69,7 @@ if __name__ == '__main__':
     if args.reinstall:
         ReInstall(venvManager)
 
-    CreateEnvironmentForRealESRGAN()
+    CreateEnvironmentForRealESRGAN(venvManager.osName)
     CreateDirectories()
 
     venvManager.RunFile("main.py")
