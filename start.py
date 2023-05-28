@@ -59,7 +59,7 @@ def ReInstall(venvManager : VenvManager):
 
 if __name__ == '__main__':
     parser = ArgumentParser(description="Prompt Tools WebUI")
-    parser.add_argument("--reinstall", action="store_true", help="Reinstall the envrionment")
+    parser.add_argument("--reinstall", action="store_true", help="Reinstall the environment")
     parser.add_argument("--recreate", action="store_true", help="Recreate virtual environment")
     args = parser.parse_args()
 
