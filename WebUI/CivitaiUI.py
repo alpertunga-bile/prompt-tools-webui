@@ -91,13 +91,13 @@ def Enhance(positiveFilename, negativeFilename, imageLimit, pageStart, pageEnd, 
         negativePrompts = list(set(negativePrompts))
         gc.collect()
 
-    positiveFile = open(positiveFilename, "a")
+    positiveFile = open(positiveFilename, "w")
     positiveFile.writelines(positivePrompts)
     positiveFile.close()
 
     positivePrompts.clear()
 
-    negativeFile = open(negativeFilename, "a")
+    negativeFile = open(negativeFilename, "w")
     negativeFile.writelines(negativePrompts)
     negativeFile.close()
 
