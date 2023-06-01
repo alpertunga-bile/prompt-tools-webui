@@ -127,10 +127,10 @@ def GetPrompts(jsonFile, imageIndex):
 def CanAdd(positivePrompt, wantedPrompts, unwantedPrompts):
     canAdd = False
 
-    if any(unwanted in positivePrompts for unwanted in unwantedPrompts):
+    if any(unwanted in positivePrompt for unwanted in unwantedPrompts):
         return False
 
-    if any(wanted in positivePrompts for wanted in wantedPrompts):
+    if any(wanted in positivePrompt for wanted in wantedPrompts):
         canAdd = True
 
     return canAdd
