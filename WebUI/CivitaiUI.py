@@ -30,7 +30,7 @@ def GetUrl(imageLimit, sort, period, nsfw):
     return url
 
 def Enhance(positiveFilename, negativeFilename, imageLimit, pageStart, pageEnd, sort, period, nsfw, wantedPrompts, unwantedPrompts, progress=Progress()):
-    url = GetUrl(imageLimit, sort, period, nsfw)
+    baseUrl = GetUrl(imageLimit, sort, period, nsfw)
 
     wantedPromptsList = wantedPrompts.split(",")
     unwantedPromptsList = unwantedPrompts.split(",")
@@ -60,7 +60,7 @@ def Enhance(positiveFilename, negativeFilename, imageLimit, pageStart, pageEnd, 
     header = {"content-type":"application.json"}
 
     for pageNumber in progress.tqdm(range(pageStart, pageEnd + 1), desc="Getting Data From Pages"):
-        url = url + str(pageNumber)
+        url = baseUrl + str(pageNumber)
         try:
             jsonFile = loads(get(url, headers=header).text)
         except:
@@ -87,21 +87,21 @@ def Enhance(positiveFilename, negativeFilename, imageLimit, pageStart, pageEnd, 
             negative += "\n"
             negativePrompts.append(negative)
 
-        positivePrompts = list(set(positivePrompts))
-        negativePrompts = list(set(negativePrompts))
+        positivePrompts = [*set(positivePrompts)]
+        negativePrompts = [*set(negativePrompts)]
         gc.collect()
 
     positiveFile = open(positiveFilename, "w")
     positiveFile.writelines(positivePrompts)
     positiveFile.close()
 
-    positivePrompts.clear()
+    del positivePrompts
 
     negativeFile = open(negativeFilename, "w")
     negativeFile.writelines(negativePrompts)
     negativeFile.close()
 
-    negativePrompts.clear()
+    del negativePrompts
 
     gc.collect()
 
@@ -125,20 +125,13 @@ def GetPrompts(jsonFile, imageIndex):
     return positivePrompt, negativePrompt
 
 def CanAdd(positivePrompt, wantedPrompts, unwantedPrompts):
-    canAdd = True
-
-    for unwanted in unwantedPrompts:
-        if unwanted in positivePrompt:
-            canAdd = False
-
-    if canAdd is False:
-        return canAdd
-
     canAdd = False
 
-    for wanted in wantedPrompts:
-        if wanted in positivePrompt:
-            canAdd = True
+    if any(unwanted in positivePrompts for unwanted in unwantedPrompts):
+        return False
+
+    if any(wanted in positivePrompts for wanted in wantedPrompts):
+        canAdd = True
 
     return canAdd
 
