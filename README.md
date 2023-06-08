@@ -10,6 +10,10 @@
 - [x] Adding guides to README file
 - [ ] Adding video guides for tabs
 
+## Usage
+- Clone the repository and get into project folder with ```git clone https://github.com/alpertunga-bile/prompt-tools-webui.git && cd prompt-tools-webui``` command.
+- Start the application with ```python start.py``` command.
+
 ## Tabs
 ### Parser Tab
 - Choose prompt files to parse.
