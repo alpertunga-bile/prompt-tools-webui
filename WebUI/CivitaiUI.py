@@ -10,10 +10,14 @@ def Show():
     startfile("dataset")
 
 def GetMaxPage():
-    url = f"https://civitai.com/api/v1/images?limit=1"
-    header = {"content-type":"application.json"}
-    jsonFile = loads(get(url, headers=header).text)
-    maxPage = int(jsonFile['metadata']['totalPages'])
+    maxPage = 200000
+    try:
+        url = f"https://civitai.com/api/v1/images?limit=1"
+        header = {"content-type":"application.json"}
+        jsonFile = loads(get(url, headers=header).text)
+        maxPage = int(jsonFile['metadata']['totalPages'])
+    except:
+        maxPage = 200000
 
     return maxPage
 
