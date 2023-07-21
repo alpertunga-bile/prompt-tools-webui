@@ -1,6 +1,6 @@
 from json import loads
 from requests import get
-from re import sub
+from re import sub, compile, IGNORECASE
 from os.path import exists
 import gc
 from gradio import Progress
@@ -128,11 +128,15 @@ def GetPrompts(jsonFile, imageIndex):
 
     return positivePrompt, negativePrompt
 
+def CheckWholeWord(word : str, whole_string : str) -> bool:
+    return True if compile(r'\b({0})\b'.format(word), flags=IGNORECASE).search(whole_string) is not None else False
+
 def CanAdd(positivePrompt, wantedPrompts, unwantedPrompts):
     canAdd = False
 
-    if any(unwanted in positivePrompt for unwanted in unwantedPrompts):
-        return False
+    for unwanted in unwantedPrompts:
+        if CheckWholeWord(unwanted, positivePrompt):
+            return False
 
     if any(wanted in positivePrompt for wanted in wantedPrompts):
         canAdd = True
